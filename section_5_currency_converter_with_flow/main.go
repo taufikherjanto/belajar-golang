@@ -5,8 +5,16 @@ import (
 	"strings"
 )
 
-// maksimal dollar yang boleh ditukar
-//maxResultExchange = 1000
+const (
+	// maksimal dollar yang boleh ditukar
+	maxResultExchange = 1000
+	rateUSDEUR        = 0.91
+	rateUSDGBP        = 0.78
+	rateUSDJPY        = 148.16
+	rateEURGBP        = 0.86
+	rateEURJPY        = 161.98
+	rateGBPJPY        = 189.43
+)
 
 func main() {
 
@@ -58,7 +66,7 @@ func main() {
 		fmt.Println("Mata uang tujuan: ", mataUangTujuan)
 		fmt.Println("Hasil konversi: ", hasilExchange)
 
-		if hasilExchange > 1000 {
+		if hasilExchange > maxResultExchange {
 			fmt.Println("Warning, hasil konversi terlalu besar!!!")
 		}
 
@@ -88,29 +96,29 @@ func checkCurrency(mataUang string) bool {
 func exchangeMoney(mataUang string, mataUangTujuan string, uang float64) float64 {
 	var hasilExchange float64
 	if mataUang == "USD" && mataUangTujuan == "EUR" {
-		hasilExchange = uang * 0.91
+		hasilExchange = uang * rateUSDEUR
 	} else if mataUang == "USD" && mataUangTujuan == "GBP" {
-		hasilExchange = uang * 0.78
+		hasilExchange = uang * rateUSDGBP
 	} else if mataUang == "USD" && mataUangTujuan == "JPY" {
-		hasilExchange = uang * 148.16
+		hasilExchange = uang * rateUSDJPY
 	} else if mataUang == "EUR" && mataUangTujuan == "USD" {
-		hasilExchange = uang / 0.91
+		hasilExchange = uang / rateUSDEUR
 	} else if mataUang == "EUR" && mataUangTujuan == "GBP" {
-		hasilExchange = uang * 0.86
+		hasilExchange = uang * rateEURGBP
 	} else if mataUang == "EUR" && mataUangTujuan == "JPY" {
-		hasilExchange = uang * 161.98
+		hasilExchange = uang * rateEURJPY
 	} else if mataUang == "GBP" && mataUangTujuan == "USD" {
-		hasilExchange = uang / 0.78
+		hasilExchange = uang / rateUSDGBP
 	} else if mataUang == "GBP" && mataUangTujuan == "EUR" {
-		hasilExchange = uang / 0.86
+		hasilExchange = uang / rateEURGBP
 	} else if mataUang == "GBP" && mataUangTujuan == "JPY" {
-		hasilExchange = uang * 189.43
+		hasilExchange = uang * rateGBPJPY
 	} else if mataUang == "JPY" && mataUangTujuan == "USD" {
-		hasilExchange = uang / 148.16
+		hasilExchange = uang / rateUSDJPY
 	} else if mataUang == "JPY" && mataUangTujuan == "EUR" {
-		hasilExchange = uang * 161.98
+		hasilExchange = uang * rateEURJPY
 	} else if mataUang == "JPY" && mataUangTujuan == "GBP" {
-		hasilExchange = uang / 189.43
+		hasilExchange = uang / rateGBPJPY
 	} else if mataUang == mataUangTujuan {
 		hasilExchange = uang
 	}
