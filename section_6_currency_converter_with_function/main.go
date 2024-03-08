@@ -72,7 +72,7 @@ func main() {
 		fmt.Println("Jumlah uang : ", jumlahUang)
 		fmt.Println("Mata uang: ", mataUang)
 		fmt.Println("Mata uang tujuan: ", mataUangTujuan)
-		fmt.Println("Persentase Perubahan: ", persentasePerubahan)
+		fmt.Printf("Persentase Perubahan: %.2f%%\n", persentasePerubahan)
 		fmt.Println("Hasil konversi: ", hasilExchange)
 
 		if hasilExchange > maxResultExchange {
