@@ -130,7 +130,7 @@ func convertCurrency(mataUang string, mataUangTujuan string, uang float64, perse
 	} else if mataUang == "JPY" && mataUangTujuan == "GBP" {
 		hasilExchange = uang / rateGBPJPY
 	} else if mataUang == mataUangTujuan {
-		return uang
+		hasilExchange = uang
 	}
 
 	// hitung konversi mata uang berdasarkan persentase perubahan nilai tukar yang diberikan
