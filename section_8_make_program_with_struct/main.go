@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"bufio"
+	"fmt"
+	"os"
+)
 
 type Mahasiswa struct {
 	Nama    string
@@ -69,11 +73,13 @@ func main() {
 			tampilkanData(dataMahasiswa)
 		case 2:
 			fmt.Print("Masukkan Nama: ")
-			_, err := fmt.Scanln(&inputNama)
+			reader := bufio.NewReader(os.Stdin)
+			input, err := reader.ReadString('\n')
 			if err != nil {
 				fmt.Println("Error baca input: ", err)
 				return
 			}
+			inputNama = input
 
 			fmt.Print("Masukkan NIM: ")
 			_, err = fmt.Scanln(&inputNim)
@@ -83,11 +89,13 @@ func main() {
 			}
 
 			fmt.Print("Masukkan jurusan: ")
-			_, err = fmt.Scanln(&inputJurusan)
+			reader = bufio.NewReader(os.Stdin)
+			input, err = reader.ReadString('\n')
 			if err != nil {
 				fmt.Println("Error baca input: ", err)
 				return
 			}
+			inputJurusan = input
 
 			dataMahasiswa = tambahMahasiswa(dataMahasiswa, inputNama, inputNim, inputJurusan)
 			fmt.Print("Data mahasiswa telah ditambahkan: ", dataMahasiswa)
