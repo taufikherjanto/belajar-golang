@@ -74,12 +74,12 @@ func main() {
 		case 2:
 			fmt.Print("Masukkan Nama: ")
 			reader := bufio.NewReader(os.Stdin)
-			input, err := reader.ReadString('\n')
+			inputNama, err = reader.ReadString('\n')
 			if err != nil {
 				fmt.Println("Error baca input: ", err)
 				return
 			}
-			inputNama = input
+			//inputNama = input
 
 			fmt.Print("Masukkan NIM: ")
 			_, err = fmt.Scanln(&inputNim)
@@ -90,12 +90,12 @@ func main() {
 
 			fmt.Print("Masukkan jurusan: ")
 			reader = bufio.NewReader(os.Stdin)
-			input, err = reader.ReadString('\n')
+			inputJurusan, err = reader.ReadString('\n')
 			if err != nil {
 				fmt.Println("Error baca input: ", err)
 				return
 			}
-			inputJurusan = input
+			//inputJurusan = input
 
 			dataMahasiswa = tambahMahasiswa(dataMahasiswa, inputNama, inputNim, inputJurusan)
 			fmt.Print("Data mahasiswa telah ditambahkan: ", dataMahasiswa)
