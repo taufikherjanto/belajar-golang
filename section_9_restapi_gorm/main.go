@@ -1,12 +1,22 @@
 package main
 
 import (
+	"log"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
+
+type User struct {
+	ID           int       `json:"id" gorm:"primarykey;autoIncrement"`
+	Username     string    `json:"username"`
+	Email        string    `json:"email"`
+	PasswordHash string    `json:"-" gorm:"column:password_hash"`
+	CreatedAt    time.Time `json"created_at"`
+}
 
 type Product struct {
 	ID          int       `json:"id" gorm:"primaryKey;autoIncrement"`
@@ -26,6 +36,72 @@ func main() {
 
 	app := fiber.New()
 
+	// Register user
+	app.Post("/api/users/register", func(c *fiber.Ctx) error {
+		var user User
+		// parse request body
+		// declare variable err dan inisialisasi dengan nilai dari bodyparse, 
+		// kemudian cek err apakah bernilai nil
+		if err := c.BodyParser(&user); err != nil {
+			return err
+		}
+
+		log.Println("Body Parser: ", &user)
+
+		// pengecekan username atau email yang sudah ada
+		var existingUser User
+		if db.Where("username = ? OR email = ?", user.Username, user.Email).First(&existingUser).Error == nil {
+			// User dengan username atau email sudah terdaftar
+			return c.Status(fiber.StatusConflict).JSON(fiber.Map{
+				"error": "Username atau email sudah terdaftar",
+			})
+		}
+
+		// hash password sebelum simpan ke database
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.PasswordHash), bcrypt.DefaultCost)
+		if err != nil {
+			return err
+		}
+
+		// assign value hashedPassword ke struct user field PasswordHash
+		user.PasswordHash = string(hashedPassword)
+		log.Println("Hashed Password: ", user.PasswordHash)
+
+		// simpan ke database
+		db.Create(&user)
+
+		// mengembalikan response
+		return c.JSON(user)
+	})
+
+	app.Post("/api/users/login", func(c *fiber.Ctx) error {
+		// declare requestLogin dengan struct email dan password
+		// kemudian body parse requestLogin
+		var requestLogin struct {
+			Email    string `json:"email"`
+			Password string `json:"password"`
+		}
+
+		if err := c.BodyParser(&requestLogin); err != nil {
+			return err
+		}
+
+		// declare user untuk ambil data dari db
+		// kemudian bandingkan nilainya dengan requestLogin
+		var user User
+		if err := db.Where("email = ? ", requestLogin.Email).Find(&user).Error; err != nil {
+			return fiber.ErrNotFound
+		}
+
+		// compare password
+		if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(requestLogin.Password)); err != nil {
+			// kembalikan response error jika password tidak cocok
+			return fiber.ErrUnauthorized
+		}
+
+		return c.JSON(user)
+	})
+
 	// Baca products
 	app.Get("/api/products/", func(c *fiber.Ctx) error {
 		var products []Product
@@ -39,13 +115,12 @@ func main() {
 	// Buat product
 	app.Post("/api/products", func(c *fiber.Ctx) error {
 		var product Product
-
 		// parse request body
 		if err := c.BodyParser(&product); err != nil {
+			log.Println("Body parser: ", product)
+			log.Println("Error parsing request body:", err)
 			return err
 		}
-
-		product.CreatedAt = time.Now()
 
 		// buat product di database
 		db.Create(&product)
@@ -76,7 +151,6 @@ func main() {
 		}
 
 		// parse body
-
 		if err := c.BodyParser(&product); err != nil {
 			return err
 		}
@@ -86,8 +160,7 @@ func main() {
 		return c.JSON(product)
 	})
 
-	app.Delete("/api/products/id:", func(c *fiber.Ctx) error {
-		//var product Product
+	app.Delete("/api/products/:id", func(c *fiber.Ctx) error {
 
 		// parameter id
 		id := c.Params("id")
