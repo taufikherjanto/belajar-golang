@@ -15,7 +15,7 @@ type User struct {
 	Username     string    `json:"username"`
 	Email        string    `json:"email"`
 	PasswordHash string    `json:"-" gorm:"column:password_hash"`
-	CreatedAt    time.Time `json"created_at"`
+	CreatedAt    time.Time `json:"created_at"`
 }
 
 type Product struct {
@@ -40,7 +40,7 @@ func main() {
 	app.Post("/api/users/register", func(c *fiber.Ctx) error {
 		var user User
 		// parse request body
-		// declare variable err dan inisialisasi dengan nilai dari bodyparse, 
+		// declare variable err dan inisialisasi dengan nilai dari bodyparse,
 		// kemudian cek err apakah bernilai nil
 		if err := c.BodyParser(&user); err != nil {
 			return err
