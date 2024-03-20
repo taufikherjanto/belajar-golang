@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -14,7 +15,7 @@ type User struct {
 	ID           int       `json:"id" gorm:"primarykey;autoIncrement"`
 	Username     string    `json:"username"`
 	Email        string    `json:"email"`
-	PasswordHash string    `json:"-" gorm:"column:password_hash"`
+	PasswordHash string    `json:"password"`
 	CreatedAt    time.Time `json:"created_at"`
 }
 
@@ -57,6 +58,7 @@ func main() {
 			})
 		}
 
+		fmt.Println(user.PasswordHash)
 		// hash password sebelum simpan ke database
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.PasswordHash), bcrypt.DefaultCost)
 		if err != nil {
